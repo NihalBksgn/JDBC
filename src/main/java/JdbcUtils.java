@@ -166,7 +166,7 @@ public class JdbcUtils {
     }
 
     //5. Adım: Bağlantı ve Statement'ı kapat.
-    public static void closeConnectionAndStatement(){
+    public static void closeConnectionAndStatement() {
 
         try {
             connection.close();
@@ -175,10 +175,10 @@ public class JdbcUtils {
             throw new RuntimeException(e);
         }
         try {
-            if(connection.isClosed()&&statement.isClosed()){
+            if (connection.isClosed() && statement.isClosed()) {
                 System.out.println("Connection and statement closed!");
 
-            }else {
+            } else {
                 System.out.println("Connection and statement NOT closed!");
             }
         } catch (SQLException e) {
@@ -187,4 +187,54 @@ public class JdbcUtils {
 
     }
 
-}
+
+
+        public static void executeQuery2 (String tableName,String where, String...columnName){
+            StringBuilder columns = new StringBuilder("");
+            for (String w : columnName) {
+                columns.append(w).append(",");
+            }
+            columns.deleteCharAt(columns.length() - 1);
+
+            Statement statement = JdbcUtils.createStatement();
+
+
+            try {
+                String sql2 = "select   " + columns + " from " + tableName+ "WHERE "+where ;
+                ResultSet resultset1 = statement.executeQuery(sql2);
+                while (resultset1.next()) {
+
+                    for (String j : columnName) {
+
+                        System.out.print(resultset1.getObject(j) + " ");
+
+                    }
+                    System.out.println();
+
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+
+        }
+
+
+    public static List<Object> listeEkleme2(String tableName,String where,String fieldName ){
+
+        Statement st =JdbcUtils.createStatement();
+        String query = "Select "+fieldName+ " from "+ tableName+ "WHERE "+ where;
+        List<Object> fields=new ArrayList<>();
+        try {
+            ResultSet resultSet= st.executeQuery(query);
+
+            while (resultSet.next()){
+                fields.add(resultSet.getObject(1));
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }return fields;
+    }
+    }
+
+
